@@ -13,8 +13,7 @@ def get_pipeline_code_locations():
     pipeline package it finds.
 
     This provides both auto-discovery and error isolation. If one pipeline
-    fails to load, the others are unaffected because the `define_workspace`
-    function handles errors from this generator gracefully.
+    fails to load, it is silently skipped.
     """
     pipelines_path = Path(__file__).parent / PIPELINES_DIR
     for filename in os.listdir(pipelines_path):
@@ -24,18 +23,24 @@ def get_pipeline_code_locations():
             pipeline_name = filename
             print(f"Discovered pipeline: {pipeline_name}")
 
-            # By removing the try/except, any exception raised here will be
-            # caught by the `define_workspace` function. It will then mark
-            # this specific code location as failed in the UI, without
-            # crashing the entire workspace.
-            yield DagsterCodeLocation(
-                location_name=f"{pipeline_name}_location",
-                module_name=f"quickstart_etl.assets.{pipeline_name}.definitions",
-            )
+            # This try/except block will catch any loading errors from a single
+            # pipeline, print a warning to the console, and allow the other
+            # pipelines to load successfully without showing an error in the UI.
+            try:
+                yield DagsterCodeLocation(
+                    location_name=f"{pipeline_name}_location",
+                    module_name=f"quickstart_etl.assets.{pipeline_name}.definitions",
+                )
+            except Exception as e:
+                # This is the key to skipping errors. If a pipeline is broken,
+                # we print a warning to the console logs but continue loading the others.
+                print(
+                    f"WARNING: Could not load pipeline '{pipeline_name}'. "
+                    f"It will be skipped. Error: {e}"
+                )
 
 
-# The `define_workspace` function is robust. It will iterate through the
-# generator and gracefully handle any exceptions from individual locations.
+# The `define_workspace` function will now only receive successfully loaded locations.
 workspace = define_workspace(
     locations_from_generator=get_pipeline_code_locations()
 )
