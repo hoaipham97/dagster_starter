@@ -1,4 +1,13 @@
+#locations:
+#- code_source:
+#    module_name: quickstart_etl.definitions
+#  location_name: dagster_starter
+
 locations:
-- code_source:
-    module_name: quickstart_etl.definitions
-  location_name: dagster_starter
+  - code_source:
+      # Point to the file containing your `define_workspace` call
+      file_name: workspace.py
+      # The name of the variable that holds the workspace definition
+      attribute: workspace
+    # A name for the entire workspace in the UI
+    location_name: quickstart_etl_workspace
