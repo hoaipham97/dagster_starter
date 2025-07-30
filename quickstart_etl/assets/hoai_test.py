@@ -15,6 +15,8 @@ def test1() -> None:
 
 
 @asset(deps=[test1], group_name="hoaipham_test", compute_kind="hoaipham_test Dagster")
-def test2(context: AssetExecutionContext) -> MaterializeResult:
-  print("test2_hihi")
-  return 1 + 3
+def test2(context: AssetExecutionContext) -> int:
+    print("test2_hihi")
+    result = 1 + 3
+    context.log.info(f"Result is {result}")
+    return result
