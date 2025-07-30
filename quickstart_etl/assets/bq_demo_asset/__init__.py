@@ -13,8 +13,8 @@ from . import assets
 import json
 import os
 
-bq_cred_b64 = os.getenv("BQ_CRED")
-service_account_info = json.loads(bq_cred_b64)
+service_account_info = os.getenv("BQ_CRED")
+# service_account_info = json.loads(bq_cred_b64)
 
 bq_demo_assets = load_assets_from_modules([assets])
 
