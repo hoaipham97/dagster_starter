@@ -50,3 +50,35 @@ defs = Definitions(
     assets=my_assets,
     schedules=[daily_refresh_schedule],
 )
+
+from dagster import define_asset_job, ScheduleDefinition, Definitions
+from quickstart_etl.assets.hoai_test import test1, test2
+
+# Existing assets (import them as you already have)
+from quickstart_etl.assets.some_existing_module import some_existing_asset
+
+# Aggregate your assets including new ones
+all_assets = [
+    some_existing_asset,
+    test1,
+    test2,
+]
+
+# Define a new job that runs your two assets (test1 and test2)
+hoaipham_test_job = define_asset_job(
+    name="hoaipham_test_job",
+    selection=["test1", "test2"],  # Names must match your asset function names
+)
+
+# Define the schedule for this job - e.g., run every day at 3:30 AM Asia/Bangkok time
+hoaipham_test_schedule = ScheduleDefinition(
+    job=hoaipham_test_job,
+    cron_schedule="30 3 * * *",
+    execution_timezone="Asia/Bangkok",
+)
+
+# Add to your Definitions
+defs = Definitions(
+    assets=all_assets,
+    schedules=[hoaipham_test_schedule],
+)
