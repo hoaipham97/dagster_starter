@@ -8,12 +8,10 @@ from dagster import (
 from dagster_gcp import BigQueryResource
 
 from . import assets
+import binascii
 import base64
 import json
 import os
-
-# with open('cred.json') as f:
-#     service_account_info = json.load(f)
 
 bq_cred_b64 = os.getenv("BQ_CRED")
 if not bq_cred_b64:
@@ -21,9 +19,16 @@ if not bq_cred_b64:
         "The BQ_CRED environment variable must be set with the base64 encoded service account key."
     )
 
-# Decode the base64 string, then parse the resulting JSON string into a dictionary.
-service_account_json_str = base64.b64decode(bq_cred_b64).decode("utf-8")
-service_account_info = json.loads(service_account_json_str)
+try:
+    # Decode the base64 string, then parse the resulting JSON string into a dictionary.
+    service_account_json_str = base64.b64decode(bq_cred_b64).decode("utf-8")
+    service_account_info = json.loads(service_account_json_str)
+except (binascii.Error, json.JSONDecodeError) as e:
+    raise ValueError(
+        "Failed to decode BQ_CRED environment variable. "
+        "Please ensure it is a valid, unquoted, base64-encoded JSON string. "
+        f"Underlying error: {e}"
+    )
 
 bq_demo_assets = load_assets_from_modules([assets])
 
