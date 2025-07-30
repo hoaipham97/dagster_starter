@@ -54,12 +54,8 @@ defs = Definitions(
 from dagster import define_asset_job, ScheduleDefinition, Definitions
 from quickstart_etl.assets.hoai_test import test1, test2
 
-# Existing assets (import them as you already have)
-from quickstart_etl.assets.some_existing_module import some_existing_asset
-
 # Aggregate your assets including new ones
 all_assets = [
-    some_existing_asset,
     test1,
     test2,
 ]
