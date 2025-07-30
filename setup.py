@@ -9,7 +9,7 @@ setup(
         "boto3",
         "pandas",
         "matplotlib",
-        "dagster-gcp"
+        # "dagster-gcp"
         # "google-cloud-bigquery",
         # "pyarrow"
     ],
