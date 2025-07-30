@@ -9,9 +9,9 @@ setup(
         "boto3",
         "pandas",
         "matplotlib",
-        "dagster-gcp",
-        "google-cloud-bigquery",
-        "pyarrow"
+        "dagster-gcp"
+        # "google-cloud-bigquery",
+        # "pyarrow"
     ],
     extras_require={"dev": ["dagster-webserver", "pytest"]},
 )
