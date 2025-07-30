@@ -1,7 +1,7 @@
 from dagster import AssetExecutionContext, asset
 
 @asset(group_name="hoaipham_test", compute_kind="hoaipham_test Dagster")
-def test1() -> None:
+def test1(context: AssetExecutionContext) -> None:
   """A simple asset that prints a message."""
   print("ahihi")
 
